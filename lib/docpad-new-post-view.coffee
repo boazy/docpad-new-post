@@ -3,15 +3,15 @@ path = require 'path'
 fs = require 'fs-plus'
 
 module.exports =
-class JekyllNewPostView extends View
+class newPostView extends View
   @content: ->
-    @div class: 'jekyll-new-post overlay from-top', =>
+    @div class: 'docpad-new-post overlay from-top', =>
       @label "Post Title", class: 'icon icon-file-add', outlet: 'promptText'
       @subview 'miniEditor', new EditorView(mini: true)
       @div class: 'error-message', outlet: 'errorMessage'
 
   initialize: (serializeState) ->
-    atom.workspaceView.command "jekyll-new-post:new-post", => @toggle()
+    atom.workspaceView.command "docpad-new-post:new-post", => @toggle()
     @on 'core:confirm', => @onConfirm(@miniEditor.getText())
     @on 'core:cancel', => @destroy()
 
@@ -44,7 +44,7 @@ class JekyllNewPostView extends View
   onConfirm: (title) ->
     fileName = @generateFileName(title)
     dateString = @generateDateString()
-    relativePath = atom.config.get('jekyll-new-post.postsDir') + fileName + atom.config.get('jekyll-new-post.fileType')
+    relativePath = atom.config.get('docpad-new-post.postsDir') + fileName + atom.config.get('docpad-new-post.fileType')
     endsWithDirectorySeparator = /\/$/.test(relativePath)
     pathToCreate = atom.project.resolve(relativePath)
     return unless pathToCreate
@@ -64,4 +64,13 @@ class JekyllNewPostView extends View
       @showError("#{error.message}.")
 
   fileContents:(title, dateString)->
-    return '---\r\nlayout: post\r\ntitle: "' + title + '"\r\ndate: ' + dateString + '\r\n---'
+    '''
+    ---
+    title:       #{title}
+    description: 
+    date:        #{dateString}
+    layout:      post
+    tags:        []
+    ---
+
+    '''
