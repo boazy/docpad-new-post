@@ -64,7 +64,7 @@ class newPostView extends View
       @showError("#{error.message}.")
 
   fileContents:(title, dateString)->
-    '''
+    """
     ---
     title:       #{title}
     description: 
@@ -73,4 +73,4 @@ class newPostView extends View
     tags:        []
     ---
 
-    '''
+    """
